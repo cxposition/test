@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+)
 
 // Sum returns the sum of all integers in nums.
 func Sum(nums ...int) int {
@@ -21,8 +25,29 @@ func Average(nums ...int) float64 {
 }
 
 func main() {
-	scores := []int{88, 95, 76, 90}
-	fmt.Printf("scores=%v\n", scores)
-	fmt.Printf("sum=%d\n", Sum(scores...))
-	fmt.Printf("avg=%.2f\n", Average(scores...))
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	})
+
+	http.HandleFunc("/scores", func(w http.ResponseWriter, _ *http.Request) {
+		scores := []int{88, 95, 76, 90}
+		resp := struct {
+			Scores  []int   `json:"scores"`
+			Sum     int     `json:"sum"`
+			Average float64 `json:"average"`
+		}{
+			Scores:  scores,
+			Sum:     Sum(scores...),
+			Average: Average(scores...),
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(resp); err != nil {
+			http.Error(w, "failed to encode response", http.StatusInternalServerError)
+		}
+	})
+
+	log.Println("server listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
