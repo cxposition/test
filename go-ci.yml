@@ -1,0 +1,70 @@
+name: Test Dir Go CI
+
+# 仅用于测试 test 目录下的 Go 代码流程。
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - test/**
+      - .github/workflows/go-ci.yaml
+  pull_request:
+    branches:
+      - main
+      - master
+    paths:
+      - test/**
+      - .github/workflows/go-ci.yaml
+  # 支持手动触发，便于调试 workflow。
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    # 所有 run 步骤都在 test 目录下执行。
+    defaults:
+      run:
+        working-directory: test
+
+    steps:
+      # 拉取仓库源码。
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 从 test/go.mod 读取 Go 版本并启用依赖缓存。
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: test/go.mod
+          cache: true
+          cache-dependency-path: |
+            test/go.mod
+            test/go.sum
+
+      # 预下载依赖，尽早暴露依赖问题。
+      - name: Download dependencies
+        run: go mod download
+
+      # 若源码未按 gofmt 格式化则失败。
+      - name: Check formatting
+        run: |
+          fmt_out=$(gofmt -l .)
+          if [ -n "$fmt_out" ]; then
+            echo "以下文件未通过 gofmt 格式化:"
+            echo "$fmt_out"
+            exit 1
+          fi
+
+      # 执行静态检查。
+      - name: Run go vet
+        run: go vet ./...
+
+      # 运行测试。
+      - name: Run tests
+        run: go test ./... -v
+
+      # 确保项目可编译。
+      - name: Build
+        run: go build -v ./...
+

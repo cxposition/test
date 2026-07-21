@@ -1,0 +1,59 @@
+name: Go CI
+
+# test 独立仓库的 CI：代码检查、测试和构建。
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  # 支持手动触发，便于调试 workflow。
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 拉取仓库源码。
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 从 go.mod 读取 Go 版本并启用依赖缓存。
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.mod
+            go.sum
+
+      # 预下载依赖，尽早暴露依赖问题。
+      - name: Download dependencies
+        run: go mod download
+
+      # 若源码未按 gofmt 格式化则失败。
+      - name: Check formatting
+        run: |
+          fmt_out=$(gofmt -l .)
+          if [ -n "$fmt_out" ]; then
+            echo "以下文件未通过 gofmt 格式化:"
+            echo "$fmt_out"
+            exit 1
+          fi
+
+      # 执行静态检查。
+      - name: Run go vet
+        run: go vet ./...
+
+      # 运行测试。
+      - name: Run tests
+        run: go test ./... -v
+
+      # 确保项目可编译。
+      - name: Build
+        run: go build -v ./...
