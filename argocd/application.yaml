@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/replace-owner/replace-repo.git
+    repoURL: https://github.com/cxposition/test.git
     targetRevision: main
     path: k8s/base
   destination:
