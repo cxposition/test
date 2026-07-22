@@ -30,6 +30,11 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
+	http.HandleFunc("/healthx", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("okx"))
+	})
+
 	http.HandleFunc("/scores", func(w http.ResponseWriter, _ *http.Request) {
 		scores := []int{88, 95, 76, 90}
 		resp := struct {
@@ -49,5 +54,6 @@ func main() {
 	})
 
 	log.Println("server listening on :8080")
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
