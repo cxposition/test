@@ -45,6 +45,11 @@ func main() {
 		_, _ = w.Write([]byte("okx"))
 	})
 
+	http.HandleFunc("/healthppp", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("okx"))
+	})
+
 	http.HandleFunc("/scores", func(w http.ResponseWriter, _ *http.Request) {
 		scores := []int{88, 95, 76, 90}
 		resp := struct {
