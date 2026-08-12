@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: test-app
-        image: ghcr.io/cxposition/test:d188cce6bcdae5dcdf5d9955f1450d5b12fd797a
+        image: ghcr.io/cxposition/test:142423d6af7394e35210a888c4d54880341657c1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
