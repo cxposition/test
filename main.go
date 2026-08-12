@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -30,52 +29,9 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
-	http.HandleFunc("/healthx", func(w http.ResponseWriter, _ *http.Request) {
+	http.HandleFunc("/healthzzzz", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/healthp", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/healthpp", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/healthppp", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/healthpxx", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/heal", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("okx"))
-	})
-
-	http.HandleFunc("/scores", func(w http.ResponseWriter, _ *http.Request) {
-		scores := []int{88, 95, 76, 90}
-		resp := struct {
-			Scores  []int   `json:"scores"`
-			Sum     int     `json:"sum"`
-			Average float64 `json:"average"`
-		}{
-			Scores:  scores,
-			Sum:     Sum(scores...),
-			Average: Average(scores...),
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			http.Error(w, "failed to encode response", http.StatusInternalServerError)
-		}
+		_, _ = w.Write([]byte("ok"))
 	})
 
 	log.Println("server listening on :8080")
