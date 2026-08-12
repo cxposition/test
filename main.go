@@ -29,10 +29,10 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
-	http.HandleFunc("/heal", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("ok"))
-	})
+	// http.HandleFunc("/heal", func(w http.ResponseWriter, _ *http.Request) {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	_, _ = w.Write([]byte("ok"))
+	// })
 
 	log.Println("server listening on :8080")
 
