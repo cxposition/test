@@ -34,6 +34,11 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
+	http.HandleFunc("/healzzz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	})
+
 	log.Println("server listening on :8080")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
